@@ -1,9 +1,6 @@
 terraform {
   backend "remote" {}
-
-
 }
-
 
 provider "aws" {
   region = var.aws_region
@@ -16,8 +13,10 @@ resource "aws_s3_bucket" "web_distribution" {
   bucket = "ssp-testing-bucket-devenv"
   acl    = "private"
 }
+
 resource "aws_cloudfront_origin_access_identity" "web_distribution" {
 }
+
 data "aws_iam_policy_document" "web_distribution" {
   statement {
     actions = ["s3:GetObject"]
@@ -33,6 +32,7 @@ resource "aws_s3_bucket_policy" "web_distribution" {
   bucket = aws_s3_bucket.web_distribution.id
   policy = data.aws_iam_policy_document.web_distribution.json
 }
+
 resource "aws_cloudfront_distribution" "web_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -80,6 +80,7 @@ resource "aws_cloudfront_distribution" "web_distribution" {
     }
   }
 }
+
 locals {
   src_dir = "./build/"
   content_type_map = {
